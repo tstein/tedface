@@ -1,0 +1,31 @@
+{
+    "author": "me+pebble@tedstein.net",
+    "dependencies": {},
+    "keywords": [],
+    "name": "tedface",
+    "pebble": {
+        "displayName": "tedface",
+        "enableMultiJS": true,
+        "messageKeys": [],
+        "projectType": "native",
+        "resources": {
+            "media": [
+                {
+                    "file": "images/bh.png",
+                    "name": "BH_FLAG",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                }
+            ]
+        },
+        "sdkVersion": "3",
+        "targetPlatforms": [
+            "aplite"
+        ],
+        "uuid": "5377e7cb-f2c7-49d7-a28c-5347ddb62e94",
+        "watchapp": {
+            "watchface": true
+        }
+    },
+    "version": "1.0.0"
+}
