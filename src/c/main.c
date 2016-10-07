@@ -65,13 +65,12 @@ static void main_window_load(Window *window) {
   s_time_layer = text_layer_create(GRect(w_min, 24, w_full, 49));
   s_ampm_layer = text_layer_create(GRect(w_max - 50, 73, 50, 30));
 
-  bh_flag_layer = bitmap_layer_create(GRect(w_min, 103, 48, 30));
-  s_bh_time_layer = text_layer_create(GRect(w_min + 48, 103, w_full - 48, 34));
+  bh_flag_layer = bitmap_layer_create(GRect(w_min + 7, 80, 48, 30));
+  s_bh_time_layer = text_layer_create(GRect(w_min, 103, 60, 28));
 
   // style battery level layer
   text_layer_set_background_color(s_battery_level_layer, debug_layout ? GColorWhite : GColorClear);
   text_layer_set_text_color(s_battery_level_layer, debug_layout ? GColorBlack : GColorWhite);
-  //text_layer_set_font(s_battery_level_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
   text_layer_set_text_alignment(s_battery_level_layer, GTextAlignmentRight);
 
   // style time layer
@@ -99,7 +98,7 @@ static void main_window_load(Window *window) {
   text_layer_set_background_color(s_bh_time_layer, debug_layout ? GColorWhite : GColorClear);
   text_layer_set_text_color(s_bh_time_layer, debug_layout ? GColorBlack : GColorWhite);
   text_layer_set_font(s_bh_time_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
-  text_layer_set_text_alignment(s_bh_time_layer, GTextAlignmentLeft);
+  text_layer_set_text_alignment(s_bh_time_layer, GTextAlignmentCenter);
 
   layer_add_child(window_layer, text_layer_get_layer(s_time_layer));
   layer_add_child(window_layer, text_layer_get_layer(s_ampm_layer));
