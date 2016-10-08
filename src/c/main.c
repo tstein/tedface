@@ -127,12 +127,11 @@ static void main_window_load(Window *window) {
   s_time_layer = text_layer_create(GRect(w_min, 24, w_full, 49));
   s_ampm_layer = text_layer_create(GRect(w_max - 50, 73, 50, 30));
 
-  bh_flag_layer = bitmap_layer_create(GRect(w_min + 7, 80, 48, 30));
-  s_bh_time_layer = text_layer_create(GRect(w_min, 103, 60, 28));
-
   s_icon_layer = bitmap_layer_create(GRect(w_max - 0, 103, 0, 0));
-  s_temperature_layer = text_layer_create(GRect(w_max - 50, 133, 50, 30));
+  s_temperature_layer = text_layer_create(GRect(w_min, 80, 50, 30));
 
+  bh_flag_layer = bitmap_layer_create(GRect(w_max - 48, 113, 48, 30));
+  s_bh_time_layer = text_layer_create(GRect(w_max - 60, 136, 60, 28));
 
   // style battery level layer
   text_layer_set_background_color(s_battery_level_layer, debug_layout ? GColorWhite : GColorClear);
@@ -164,7 +163,7 @@ static void main_window_load(Window *window) {
   text_layer_set_background_color(s_bh_time_layer, debug_layout ? GColorWhite : GColorClear);
   text_layer_set_text_color(s_bh_time_layer, debug_layout ? GColorBlack : GColorWhite);
   text_layer_set_font(s_bh_time_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
-  text_layer_set_text_alignment(s_bh_time_layer, GTextAlignmentCenter);
+  text_layer_set_text_alignment(s_bh_time_layer, GTextAlignmentRight);
 
   // style local weather
   bitmap_layer_set_compositing_mode(s_icon_layer, GCompOpSet);
