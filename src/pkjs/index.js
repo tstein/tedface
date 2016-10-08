@@ -24,14 +24,11 @@ function fetchWeather(latitude, longitude) {
         var celsius = response.main.temp - 273.15;
         var fahrenheit = Math.round((celsius * 9 / 5) + 32);
         var icon = iconFromWeatherId(response.weather[0].id);
-        var city = response.name;
         console.log(fahrenheit);
         console.log(icon);
-        console.log(city);
         Pebble.sendAppMessage({
           'WEATHER_ICON_KEY': icon,
-          'WEATHER_TEMPERATURE_KEY': fahrenheit + '\xB0F',
-          'WEATHER_CITY_KEY': city
+          'WEATHER_TEMPERATURE_KEY': fahrenheit + '\xB0F'
         });
       } else {
         console.log('Error');
@@ -49,14 +46,13 @@ function locationSuccess(pos) {
 function locationError(err) {
   console.warn('location error (' + err.code + '): ' + err.message);
   Pebble.sendAppMessage({
-    'WEATHER_CITY_KEY': 'Loc Unavailable',
-    'WEATHER_TEMPERATURE_KEY': 'N/A'
+    'WEATHER_TEMPERATURE_KEY': ''
   });
 }
 
 var locationOptions = {
   'timeout': 15000,
-  'maximumAge': 60000
+  'maximumAge': 3600000
 };
 
 Pebble.addEventListener('ready', function (e) {

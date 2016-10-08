@@ -23,7 +23,6 @@ static uint8_t s_sync_buffer[64];
 enum WeatherKey {
   WEATHER_ICON_KEY = 0x0,         // TUPLE_INT
   WEATHER_TEMPERATURE_KEY = 0x1,  // TUPLE_CSTRING
-  WEATHER_CITY_KEY = 0x2,         // TUPLE_CSTRING
 };
 
 static const uint32_t WEATHER_ICONS[] = {
@@ -50,11 +49,10 @@ static void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tup
       break;
 
     case WEATHER_TEMPERATURE_KEY:
-      // App Sync keeps new_tuple in s_sync_buffer, so we may use it directly
-      text_layer_set_text(s_temperature_layer, new_tuple->value->cstring);
-      break;
-
-    case WEATHER_CITY_KEY:
+      if (strlen(new_tuple->value->cstring) > 0) {
+        // App Sync keeps new_tuple in s_sync_buffer, so we may use it directly
+        text_layer_set_text(s_temperature_layer, new_tuple->value->cstring);
+      }
       break;
   }
 }
@@ -127,8 +125,8 @@ static void main_window_load(Window *window) {
   s_time_layer = text_layer_create(GRect(w_min, 24, w_full, 49));
   s_ampm_layer = text_layer_create(GRect(w_max - 50, 73, 50, 30));
 
-  s_icon_layer = bitmap_layer_create(GRect(w_max - 0, 103, 0, 0));
-  s_temperature_layer = text_layer_create(GRect(w_min, 80, 50, 30));
+  s_icon_layer = bitmap_layer_create(GRect(w_min, h_max - 80, 80, 80));
+  s_temperature_layer = text_layer_create(GRect(w_min, h_max - 30, 80, 30));
 
   bh_flag_layer = bitmap_layer_create(GRect(w_max - 48, 113, 48, 30));
   s_bh_time_layer = text_layer_create(GRect(w_max - 60, 136, 60, 28));
@@ -166,8 +164,9 @@ static void main_window_load(Window *window) {
   text_layer_set_text_alignment(s_bh_time_layer, GTextAlignmentRight);
 
   // style local weather
-  bitmap_layer_set_compositing_mode(s_icon_layer, GCompOpSet);
+  bitmap_layer_set_compositing_mode(s_icon_layer, debug_layout ? GCompOpAssignInverted : GCompOpSet);
   bitmap_layer_set_bitmap(s_icon_layer, s_icon_bitmap);
+
   text_layer_set_background_color(s_temperature_layer, debug_layout ? GColorWhite : GColorClear);
   text_layer_set_text_color(s_temperature_layer, debug_layout ? GColorBlack : GColorWhite);
   text_layer_set_font(s_temperature_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
@@ -187,7 +186,6 @@ static void main_window_load(Window *window) {
   Tuplet initial_values[] = {
     TupletInteger(WEATHER_ICON_KEY, (uint8_t) 1),
     TupletCString(WEATHER_TEMPERATURE_KEY, "...\u00B0F"),
-    TupletCString(WEATHER_CITY_KEY, "St Pebblesburg"),
   };
 
   app_sync_init(&s_sync, s_sync_buffer, sizeof(s_sync_buffer),
