@@ -52,7 +52,7 @@ function locationError(err) {
 
 var locationOptions = {
   'timeout': 15000,
-  'maximumAge': 3600000
+  'maximumAge': 1000 * 60 * 60 * 8
 };
 
 Pebble.addEventListener('ready', function (e) {

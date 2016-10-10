@@ -182,7 +182,7 @@ static void main_window_load(Window *window) {
   layer_add_child(window_layer, bitmap_layer_get_layer(s_icon_layer));
   layer_add_child(window_layer, text_layer_get_layer(s_temperature_layer));
 
-  // Start requesting weather.
+  // init weather
   Tuplet initial_values[] = {
     TupletInteger(WEATHER_ICON_KEY, (uint8_t) 1),
     TupletCString(WEATHER_TEMPERATURE_KEY, "...\u00B0F"),
@@ -208,6 +208,10 @@ static void main_window_unload(Window *window) {
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
   update_time();
+
+  if (tick_time->tm_min % 30 == 0) {
+    request_weather();
+  }
 }
 
 static void battery_state_handler(BatteryChargeState charge) {
