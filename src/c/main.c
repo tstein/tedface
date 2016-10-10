@@ -1,4 +1,5 @@
 #include <pebble.h>
+#include "outlined-text-layer.h"
 
 static const bool debug_layout = false;
 static const uint8_t padding = 5;
@@ -11,7 +12,7 @@ static GBitmap *bh_flag;
 static BitmapLayer *bh_flag_layer;
 static TextLayer *s_bh_time_layer;
 static TextLayer *s_battery_level_layer;
-static TextLayer *s_temperature_layer;
+static OutlinedTextLayer *s_temperature_layer;
 static BitmapLayer *s_icon_layer;
 static GBitmap *s_icon_bitmap = NULL;
 
@@ -37,6 +38,7 @@ static void sync_error_callback(DictionaryResult dict_error, AppMessageResult ap
 }
 
 static void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tuple, const Tuple* old_tuple, void* context) {
+  char * temp_str;
   switch (key) {
     case WEATHER_ICON_KEY:
       if (s_icon_bitmap) {
@@ -49,9 +51,10 @@ static void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tup
       break;
 
     case WEATHER_TEMPERATURE_KEY:
-      if (strlen(new_tuple->value->cstring) > 0) {
+      temp_str = (char *)new_tuple->value->cstring;
+      if (strlen(temp_str) > 0) {
         // App Sync keeps new_tuple in s_sync_buffer, so we may use it directly
-        text_layer_set_text(s_temperature_layer, new_tuple->value->cstring);
+        outlined_text_layer_set_text(s_temperature_layer, temp_str);
       }
       break;
   }
@@ -126,7 +129,7 @@ static void main_window_load(Window *window) {
   s_ampm_layer = text_layer_create(GRect(w_max - 50, 73, 50, 30));
 
   s_icon_layer = bitmap_layer_create(GRect(w_min, h_max - 80, 80, 80));
-  s_temperature_layer = text_layer_create(GRect(w_min, h_max - 30, 80, 30));
+  s_temperature_layer = outlined_text_layer_create(GRect(w_min, h_max - 30, 80, 30));
 
   bh_flag_layer = bitmap_layer_create(GRect(w_max - 48, 113, 48, 30));
   s_bh_time_layer = text_layer_create(GRect(w_max - 60, 136, 60, 28));
@@ -167,10 +170,9 @@ static void main_window_load(Window *window) {
   bitmap_layer_set_compositing_mode(s_icon_layer, debug_layout ? GCompOpAssignInverted : GCompOpSet);
   bitmap_layer_set_bitmap(s_icon_layer, s_icon_bitmap);
 
-  text_layer_set_background_color(s_temperature_layer, debug_layout ? GColorWhite : GColorClear);
-  text_layer_set_text_color(s_temperature_layer, debug_layout ? GColorBlack : GColorWhite);
-  text_layer_set_font(s_temperature_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
-  text_layer_set_text_alignment(s_temperature_layer, GTextAlignmentRight);
+  outlined_text_layer_set_colors(s_temperature_layer, GColorBlack, GColorWhite);
+  outlined_text_layer_set_font(s_temperature_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
+  outlined_text_layer_set_text_alignment(s_temperature_layer, GTextAlignmentRight);
 
 
   layer_add_child(window_layer, text_layer_get_layer(s_time_layer));
@@ -180,7 +182,7 @@ static void main_window_load(Window *window) {
   layer_add_child(window_layer, text_layer_get_layer(s_bh_time_layer));
   layer_add_child(window_layer, text_layer_get_layer(s_battery_level_layer));
   layer_add_child(window_layer, bitmap_layer_get_layer(s_icon_layer));
-  layer_add_child(window_layer, text_layer_get_layer(s_temperature_layer));
+  layer_add_child(window_layer, outlined_text_layer_get_layer(s_temperature_layer));
 
   // init weather
   Tuplet initial_values[] = {
@@ -204,6 +206,8 @@ static void main_window_unload(Window *window) {
   bitmap_layer_destroy(bh_flag_layer);
   text_layer_destroy(s_bh_time_layer);
   text_layer_destroy(s_battery_level_layer);
+  bitmap_layer_destroy(s_icon_layer);
+  outlined_text_layer_destroy(s_temperature_layer);
 }
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
